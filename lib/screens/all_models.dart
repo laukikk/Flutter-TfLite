@@ -26,8 +26,8 @@ class _AllModelsState extends State<AllModels> {
   bool _busy = false;
 
 // getting the image and telling it to check which model to use from 'predictImage()'
-  Future predictImagePicker() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Future predictImagePicker(ImageSource source) async {
+    var image = await ImagePicker.pickImage(source: source);
     if (image == null) return;
     setState(() {
       _busy = true;
@@ -293,10 +293,28 @@ class _AllModelsState extends State<AllModels> {
       body: Stack(
         children: stackChildren,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: predictImagePicker,
-        tooltip: 'Pick Image',
-        child: Icon(Icons.image),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            onPressed: () {
+              predictImagePicker(ImageSource.camera);
+            },
+            tooltip: 'Pick Image',
+            child: Icon(Icons.add_a_photo),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FloatingActionButton(
+              onPressed: () {
+                predictImagePicker(ImageSource.gallery);
+              },
+              heroTag: 'image0',
+              tooltip: 'Pick Image',
+              child: Icon(Icons.image),
+            ),
+          ),
+        ],
       ),
     );
   }
