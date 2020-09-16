@@ -1,6 +1,6 @@
 # TfLite
 
-A new Flutter project.
+A Flutter project integrated with TensorFlow Lite for Object Detection.
 
 ## Getting Started
 
