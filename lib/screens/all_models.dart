@@ -3,17 +3,13 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 
 import 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
 
-const String mobile = "MobileNet";
 const String ssd = "SSD MobileNet";
 const String yolo = "Tiny YOLOv2";
-const String deeplab = "DeepLab";
-const String posenet = "PoseNet";
 
 class AllModels extends StatefulWidget {
   static const String id = 'all_models';
@@ -24,12 +20,12 @@ class AllModels extends StatefulWidget {
 class _AllModelsState extends State<AllModels> {
   File _image;
   List _recognitions;
-  String _model = mobile;
+  String _model;
   double _imageHeight;
   double _imageWidth;
   bool _busy = false;
-  final _picker = ImagePicker();
 
+// getting the image and telling it to check which model to use from 'predictImage()'
   Future predictImagePicker() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (image == null) return;
@@ -39,6 +35,7 @@ class _AllModelsState extends State<AllModels> {
     predictImage(image);
   }
 
+// tells 'predictImagePicker()' which model to use
   Future predictImage(File image) async {
     if (image == null) return;
 
@@ -46,18 +43,8 @@ class _AllModelsState extends State<AllModels> {
       case yolo:
         await yolov2Tiny(image);
         break;
-      case ssd:
-        await ssdMobileNet(image);
-        break;
-      case deeplab:
-        await segmentMobileNet(image);
-        break;
-      case posenet:
-        await poseNet(image);
-        break;
       default:
-        await recognizeImage(image);
-      // await recognizeImageBinary(image);
+        await ssdMobileNet(image);
     }
 
     new FileImage(image)
@@ -88,6 +75,7 @@ class _AllModelsState extends State<AllModels> {
     });
   }
 
+// loads the model with the required assets
   Future loadModel() async {
     Tflite.close();
     try {
@@ -99,33 +87,15 @@ class _AllModelsState extends State<AllModels> {
             labels: "assets/yolov2_tiny.txt",
             // useGpuDelegate: true,
           );
-          break;
-        case ssd:
-          res = await Tflite.loadModel(
-            model: "assets/ssd_mobilenet.tflite",
-            labels: "assets/labels.txt",
-            // useGpuDelegate: true,
-          );
-          break;
-        case deeplab:
-          res = await Tflite.loadModel(
-            model: "assets/deeplabv3_257_mv_gpu.tflite",
-            labels: "assets/deeplabv3_257_mv_gpu.txt",
-            // useGpuDelegate: true,
-          );
-          break;
-        case posenet:
-          res = await Tflite.loadModel(
-            model: "assets/posenet_mv1_075_float_from_checkpoints.tflite",
-            // useGpuDelegate: true,
-          );
+          print('Model: YOLO');
           break;
         default:
           res = await Tflite.loadModel(
-            model: "assets/detect.tflite",
-            labels: "assets/labels.txt",
+            model: "assets/ssd_mobilenet.tflite",
+            labels: "assets/ssd_mobilenet.txt",
             // useGpuDelegate: true,
           );
+          print('Model: SSD MobileNet');
       }
       print(res);
     } catch (e) {
@@ -164,39 +134,6 @@ class _AllModelsState extends State<AllModels> {
     return convertedBytes.buffer.asUint8List();
   }
 
-  Future recognizeImage(File image) async {
-    int startTime = new DateTime.now().millisecondsSinceEpoch;
-    var recognitions = await Tflite.runModelOnImage(
-      path: image.path,
-      numResults: 6,
-      threshold: 0.05,
-      imageMean: 127.5,
-      imageStd: 127.5,
-    );
-    setState(() {
-      _recognitions = recognitions;
-    });
-    int endTime = new DateTime.now().millisecondsSinceEpoch;
-    print("Inference took ${endTime - startTime}ms");
-  }
-
-  Future recognizeImageBinary(File image) async {
-    int startTime = new DateTime.now().millisecondsSinceEpoch;
-    var imageBytes = (await rootBundle.load(image.path)).buffer;
-    img.Image oriImage = img.decodeJpg(imageBytes.asUint8List());
-    img.Image resizedImage = img.copyResize(oriImage, height: 224, width: 224);
-    var recognitions = await Tflite.runModelOnBinary(
-      binary: imageToByteListFloat32(resizedImage, 224, 127.5, 127.5),
-      numResults: 6,
-      threshold: 0.05,
-    );
-    setState(() {
-      _recognitions = recognitions;
-    });
-    int endTime = new DateTime.now().millisecondsSinceEpoch;
-    print("Inference took ${endTime - startTime}ms");
-  }
-
   Future yolov2Tiny(File image) async {
     int startTime = new DateTime.now().millisecondsSinceEpoch;
     var recognitions = await Tflite.detectObjectOnImage(
@@ -207,15 +144,6 @@ class _AllModelsState extends State<AllModels> {
       imageStd: 255.0,
       numResultsPerClass: 1,
     );
-    // var imageBytes = (await rootBundle.load(image.path)).buffer;
-    // img.Image oriImage = img.decodeJpg(imageBytes.asUint8List());
-    // img.Image resizedImage = img.copyResize(oriImage, 416, 416);
-    // var recognitions = await Tflite.detectObjectOnBinary(
-    //   binary: imageToByteListFloat32(resizedImage, 416, 0.0, 255.0),
-    //   model: "YOLO",
-    //   threshold: 0.3,
-    //   numResultsPerClass: 1,
-    // );
     setState(() {
       _recognitions = recognitions;
     });
@@ -229,44 +157,6 @@ class _AllModelsState extends State<AllModels> {
       path: image.path,
       numResultsPerClass: 1,
     );
-    // var imageBytes = (await rootBundle.load(image.path)).buffer;
-    // img.Image oriImage = img.decodeJpg(imageBytes.asUint8List());
-    // img.Image resizedImage = img.copyResize(oriImage, 300, 300);
-    // var recognitions = await Tflite.detectObjectOnBinary(
-    //   binary: imageToByteListUint8(resizedImage, 300),
-    //   numResultsPerClass: 1,
-    // );
-    setState(() {
-      _recognitions = recognitions;
-    });
-    int endTime = new DateTime.now().millisecondsSinceEpoch;
-    print("Inference took ${endTime - startTime}ms");
-  }
-
-  Future segmentMobileNet(File image) async {
-    int startTime = new DateTime.now().millisecondsSinceEpoch;
-    var recognitions = await Tflite.runSegmentationOnImage(
-      path: image.path,
-      imageMean: 127.5,
-      imageStd: 127.5,
-    );
-
-    setState(() {
-      _recognitions = recognitions;
-    });
-    int endTime = new DateTime.now().millisecondsSinceEpoch;
-    print("Inference took ${endTime - startTime}");
-  }
-
-  Future poseNet(File image) async {
-    int startTime = new DateTime.now().millisecondsSinceEpoch;
-    var recognitions = await Tflite.runPoseNetOnImage(
-      path: image.path,
-      numResults: 2,
-    );
-
-    print(recognitions);
-
     setState(() {
       _recognitions = recognitions;
     });
@@ -362,52 +252,13 @@ class _AllModelsState extends State<AllModels> {
     Size size = MediaQuery.of(context).size;
     List<Widget> stackChildren = [];
 
-    if (_model == deeplab && _recognitions != null) {
-      stackChildren.add(Positioned(
-        top: 0.0,
-        left: 0.0,
-        width: size.width,
-        child: _image == null
-            ? Text('No image selected.')
-            : Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        alignment: Alignment.topCenter,
-                        image: MemoryImage(_recognitions),
-                        fit: BoxFit.fill)),
-                child: Opacity(opacity: 0.3, child: Image.file(_image))),
-      ));
-    } else {
-      stackChildren.add(Positioned(
-        top: 0.0,
-        left: 0.0,
-        width: size.width,
-        child: _image == null ? Text('No image selected.') : Image.file(_image),
-      ));
-    }
-
-    if (_model == mobile) {
-      stackChildren.add(Center(
-        child: Column(
-          children: _recognitions != null
-              ? _recognitions.map((res) {
-                  return Text(
-                    "${res["index"]} - ${res["label"]}: ${res["confidence"].toStringAsFixed(3)}",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                      background: Paint()..color = Colors.white,
-                    ),
-                  );
-                }).toList()
-              : [],
-        ),
-      ));
-    } else if (_model == ssd || _model == yolo) {
-      stackChildren.addAll(renderBoxes(size));
-    } else if (_model == posenet) {
-      stackChildren.addAll(renderKeypoints(size));
-    }
+    stackChildren.add(Positioned(
+      top: 0.0,
+      left: 0.0,
+      width: size.width,
+      child: _image == null ? Text('No image selected.') : Image.file(_image),
+    ));
+    stackChildren.addAll(renderBoxes(size));
 
     if (_busy) {
       stackChildren.add(const Opacity(
@@ -419,16 +270,12 @@ class _AllModelsState extends State<AllModels> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('tflite example app'),
+        title: const Text('TensorFlow Lite'),
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: onSelect,
             itemBuilder: (context) {
               List<PopupMenuEntry<String>> menuEntries = [
-                const PopupMenuItem<String>(
-                  child: Text(mobile),
-                  value: mobile,
-                ),
                 const PopupMenuItem<String>(
                   child: Text(ssd),
                   value: ssd,
@@ -437,14 +284,6 @@ class _AllModelsState extends State<AllModels> {
                   child: Text(yolo),
                   value: yolo,
                 ),
-                const PopupMenuItem<String>(
-                  child: Text(deeplab),
-                  value: deeplab,
-                ),
-                const PopupMenuItem<String>(
-                  child: Text(posenet),
-                  value: posenet,
-                )
               ];
               return menuEntries;
             },
