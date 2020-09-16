@@ -1,3 +1,4 @@
+import 'package:TfLite/screens/all_models.dart';
 import 'package:TfLite/screens/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'file_upload_screen.dart';
@@ -25,6 +26,15 @@ class HomeScreen extends StatelessWidget {
               child: Text('Get Image'),
               onPressed: () {
                 Navigator.pushNamed(context, FileScreen.id);
+              },
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            RaisedButton(
+              child: Text('All Models'),
+              onPressed: () {
+                Navigator.pushNamed(context, AllModels.id);
               },
             ),
           ],

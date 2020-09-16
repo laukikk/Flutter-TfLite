@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tflite/tflite.dart';
 import 'dart:io';
 
 class FileScreen extends StatefulWidget {
@@ -18,6 +19,24 @@ class _FileScreenState extends State<FileScreen> {
     setState(() {
       _image = File(pickedFile.path);
     });
+  }
+
+  Future loadModel() async {
+    Tflite.close();
+    try {
+      String res = await Tflite.loadModel(
+          model: "assets/mobilenet_v1_1.0_224_1_default_1.tflite",
+          labels: "assets/labels.txt",
+          numThreads: 1, // defaults to 1
+          isAsset:
+              true, // defaults to true, set to false to load resources outside assets
+          useGpuDelegate:
+              false // defaults to false, set to true to use GPU delegate
+          );
+      print(res);
+    } catch (e) {
+      print('Failed to load model: $e');
+    }
   }
 
   @override
