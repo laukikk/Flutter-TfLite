@@ -7,6 +7,7 @@ import 'package:image/image.dart' as img;
 
 import 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:TfLite/components/detection.dart';
 
 const String ssd = "SSD MobileNet";
 const String yolo = "Tiny YOLOv2";
@@ -101,37 +102,6 @@ class _AllModelsState extends State<AllModels> {
     } catch (e) {
       print('Failed to load model: $e');
     }
-  }
-
-  Uint8List imageToByteListFloat32(
-      img.Image image, int inputSize, double mean, double std) {
-    var convertedBytes = Float32List(1 * inputSize * inputSize * 3);
-    var buffer = Float32List.view(convertedBytes.buffer);
-    int pixelIndex = 0;
-    for (var i = 0; i < inputSize; i++) {
-      for (var j = 0; j < inputSize; j++) {
-        var pixel = image.getPixel(j, i);
-        buffer[pixelIndex++] = (img.getRed(pixel) - mean) / std;
-        buffer[pixelIndex++] = (img.getGreen(pixel) - mean) / std;
-        buffer[pixelIndex++] = (img.getBlue(pixel) - mean) / std;
-      }
-    }
-    return convertedBytes.buffer.asUint8List();
-  }
-
-  Uint8List imageToByteListUint8(img.Image image, int inputSize) {
-    var convertedBytes = Uint8List(1 * inputSize * inputSize * 3);
-    var buffer = Uint8List.view(convertedBytes.buffer);
-    int pixelIndex = 0;
-    for (var i = 0; i < inputSize; i++) {
-      for (var j = 0; j < inputSize; j++) {
-        var pixel = image.getPixel(j, i);
-        buffer[pixelIndex++] = img.getRed(pixel);
-        buffer[pixelIndex++] = img.getGreen(pixel);
-        buffer[pixelIndex++] = img.getBlue(pixel);
-      }
-    }
-    return convertedBytes.buffer.asUint8List();
   }
 
   Future yolov2Tiny(File image) async {

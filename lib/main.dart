@@ -3,8 +3,11 @@ import 'package:TfLite/screens/file_upload_screen.dart';
 import 'package:TfLite/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:TfLite/screens/all_models.dart';
+import 'package:camera/camera.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   runApp(MyApp());
 }
 

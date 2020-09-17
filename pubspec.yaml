@@ -29,6 +29,7 @@ dependencies:
   video_player:
   tflite: ^1.1.1
   image:
+  camera: ^0.5.8+5
 
 dev_dependencies:
   flutter_test:
