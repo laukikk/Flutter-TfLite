@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
 
 import 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:TfLite/components/detection.dart';
 
 const String ssd = "SSD MobileNet";
 const String yolo = "Tiny YOLOv2";
@@ -26,7 +23,7 @@ class _AllModelsState extends State<AllModels> {
   double _imageWidth;
   bool _busy = false;
 
-// getting the image and telling it to check which model to use from 'predictImage()'
+// getting the image and passing it to 'predictImage()'
   Future predictImagePicker(ImageSource source) async {
     var image = await ImagePicker.pickImage(source: source);
     if (image == null) return;
@@ -36,11 +33,12 @@ class _AllModelsState extends State<AllModels> {
     predictImage(image);
   }
 
-// tells 'predictImagePicker()' which model to use
+// runs the desired model on the image recieved from 'predictImagePicker()'
   Future predictImage(File image) async {
     if (image == null) return;
 
     switch (_model) {
+      // checks for the desired model
       case yolo:
         await yolov2Tiny(image);
         break;
@@ -48,7 +46,7 @@ class _AllModelsState extends State<AllModels> {
         await ssdMobileNet(image);
     }
 
-    new FileImage(image)
+    new FileImage(image) // gets the image height and width
         .resolve(new ImageConfiguration())
         .addListener(ImageStreamListener((ImageInfo info, bool _) {
       setState(() {
@@ -58,11 +56,12 @@ class _AllModelsState extends State<AllModels> {
     }));
 
     setState(() {
-      _image = image;
+      _image = image; // '_image' is set
       _busy = false;
     });
   }
 
+// when the screen loads, 'initState' calls 'loadModel' to load all the models
   @override
   void initState() {
     super.initState();
@@ -104,6 +103,7 @@ class _AllModelsState extends State<AllModels> {
     }
   }
 
+// function to call the model: YOLO
   Future yolov2Tiny(File image) async {
     int startTime = new DateTime.now().millisecondsSinceEpoch;
     var recognitions = await Tflite.detectObjectOnImage(
@@ -115,12 +115,13 @@ class _AllModelsState extends State<AllModels> {
       numResultsPerClass: 1,
     );
     setState(() {
-      _recognitions = recognitions;
+      _recognitions = recognitions; // sets '_recognitions'
     });
     int endTime = new DateTime.now().millisecondsSinceEpoch;
     print("Inference took ${endTime - startTime}ms");
   }
 
+// function to call the model: SSD
   Future ssdMobileNet(File image) async {
     int startTime = new DateTime.now().millisecondsSinceEpoch;
     var recognitions = await Tflite.detectObjectOnImage(
@@ -128,12 +129,13 @@ class _AllModelsState extends State<AllModels> {
       numResultsPerClass: 1,
     );
     setState(() {
-      _recognitions = recognitions;
+      _recognitions = recognitions; // sets '_recognitions'
     });
     int endTime = new DateTime.now().millisecondsSinceEpoch;
     print("Inference took ${endTime - startTime}ms");
   }
 
+// changes the model when we change it from the app bar
   onSelect(model) async {
     setState(() {
       _busy = true;
@@ -150,6 +152,7 @@ class _AllModelsState extends State<AllModels> {
       });
   }
 
+// renders boxes over our image along with its attributes
   List<Widget> renderBoxes(Size screen) {
     if (_recognitions == null) return [];
     if (_imageHeight == null || _imageWidth == null) return [];
@@ -158,6 +161,9 @@ class _AllModelsState extends State<AllModels> {
     double factorY = _imageHeight / _imageWidth * screen.width;
     Color blue = Color.fromRGBO(37, 213, 253, 1.0);
     return _recognitions.map((re) {
+      print('Object(if): ');
+      print(
+          '${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}%');
       return Positioned(
         left: re["rect"]["x"] * factorX,
         top: re["rect"]["y"] * factorY,
@@ -184,39 +190,7 @@ class _AllModelsState extends State<AllModels> {
     }).toList();
   }
 
-  List<Widget> renderKeypoints(Size screen) {
-    if (_recognitions == null) return [];
-    if (_imageHeight == null || _imageWidth == null) return [];
-
-    double factorX = screen.width;
-    double factorY = _imageHeight / _imageWidth * screen.width;
-
-    var lists = <Widget>[];
-    _recognitions.forEach((re) {
-      var color = Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0)
-          .withOpacity(1.0);
-      var list = re["keypoints"].values.map<Widget>((k) {
-        return Positioned(
-          left: k["x"] * factorX - 6,
-          top: k["y"] * factorY - 6,
-          width: 100,
-          height: 12,
-          child: Text(
-            "● ${k["part"]}",
-            style: TextStyle(
-              color: color,
-              fontSize: 12.0,
-            ),
-          ),
-        );
-      }).toList();
-
-      lists..addAll(list);
-    });
-
-    return lists;
-  }
-
+// stacks are used to display boxes over an image
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -228,6 +202,7 @@ class _AllModelsState extends State<AllModels> {
       width: size.width,
       child: _image == null ? Text('No image selected.') : Image.file(_image),
     ));
+
     stackChildren.addAll(renderBoxes(size));
 
     if (_busy) {
