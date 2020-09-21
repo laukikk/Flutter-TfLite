@@ -22,17 +22,13 @@ class _CameraScreenState extends State<CameraScreen> {
   List _recognitions;
   int _imageHeight;
   int _imageWidth;
-  bool _busy;
   bool isDetecting = false;
 
   @override
   void initState() {
     super.initState();
-    _busy = true;
     loadModel().then((val) {
-      setState(() {
-        _busy = false;
-      });
+      setState(() {});
     });
 
     controller = CameraController(cameras[0], ResolutionPreset.ultraHigh);
@@ -117,10 +113,18 @@ class _CameraScreenState extends State<CameraScreen> {
     double factorY = _imageHeight / _imageWidth * screen.width;
     print('$factorX --- $factorY ----- $_imageHeight ------ $_imageWidth');
     Color blue = Color.fromRGBO(37, 213, 253, 1.0);
-    return _recognitions.map((re) {
-      print('Object(if): ');
+    List<dynamic> objects = [];
+    for (var x in _recognitions) {
+      if (x['confidenceInClass'] < 0.4) {
+        break;
+      }
+      objects.add(x);
+    }
+    print(objects);
+    return objects.map((re) {
       print(
           '${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}%');
+
       return Positioned(
         left: re["rect"]["x"] * factorX,
         top: re["rect"]["y"] * factorY,

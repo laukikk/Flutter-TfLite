@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:tflite/tflite.dart';
@@ -159,9 +158,16 @@ class _AllModelsState extends State<AllModels> {
 
     double factorX = screen.width;
     double factorY = _imageHeight / _imageWidth * screen.width;
-    Color blue = Color.fromRGBO(37, 213, 253, 1.0);
-    return _recognitions.map((re) {
-      print('Object(if): ');
+
+    List<dynamic> objects = [];
+    for (var x in _recognitions) {
+      if (x['confidenceInClass'] < 0.4) {
+        break;
+      }
+      objects.add(x);
+    }
+    print(objects);
+    return objects.map((re) {
       print(
           '${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}%');
       return Positioned(
@@ -173,14 +179,14 @@ class _AllModelsState extends State<AllModels> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
             border: Border.all(
-              color: blue,
+              color: Colors.red,
               width: 2,
             ),
           ),
           child: Text(
             "${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}%",
             style: TextStyle(
-              background: Paint()..color = blue,
+              background: Paint()..color = Colors.red,
               color: Colors.white,
               fontSize: 12.0,
             ),
