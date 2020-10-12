@@ -45,7 +45,7 @@ class RoundButton extends StatelessWidget {
               text,
               style: TextStyle(
                 fontSize: 14,
-                color: Color(0xff1B7E81),
+                color: Color(0xffa58d6b),
                 fontFamily: 'FjallaOne',
               ),
             ),
@@ -61,6 +61,7 @@ class RoundButton extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 15,
+                      fontFamily: 'FjallaOne',
                     ),
                   ),
                   icon: Icon(

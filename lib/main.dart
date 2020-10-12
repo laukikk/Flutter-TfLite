@@ -17,7 +17,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData.light(),
+      theme: ThemeData.light().copyWith(
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: Color(0xffA0766E),
+      )),
       initialRoute: HomeScreen.id,
       routes: {
         HomeScreen.id: (context) => HomeScreen(),

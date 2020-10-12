@@ -206,7 +206,19 @@ class _AllModelsState extends State<AllModels> {
       top: 0.0,
       left: 0.0,
       width: size.width,
-      child: _image == null ? Text('No image selected.') : Image.file(_image),
+      child: _image == null
+          ? Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                'No \nImage \nUploaded \n:(',
+                style: TextStyle(
+                  color: Color(0xffaf8d6b),
+                  fontSize: 40,
+                  fontFamily: 'FjallaOne',
+                ),
+              ),
+            )
+          : Image.file(_image),
     ));
 
     stackChildren.addAll(renderBoxes(size));
@@ -221,7 +233,13 @@ class _AllModelsState extends State<AllModels> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TensorFlow Lite'),
+        title: Text(
+          'TensorFlow Lite',
+          style: TextStyle(
+            fontFamily: 'FjallaOne',
+          ),
+        ),
+        backgroundColor: Color(0xff1B7E81),
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: onSelect,
