@@ -1,16 +1,45 @@
-# TfLite
+# TensorFlow Lite Object Detection using Flutter(Android)
 
-A Flutter project integrated with TensorFlow Lite for Object Detection.
+### Overview
 
-## Getting Started
+This is a camera app that can detect objects either real-time (by turning on the 
+camera of our mobile device), click a photo with the rear camera or load an image from our gallery. It draws a box around the detected object with the name of the detected object and it's confidence level.
 
-This project is a starting point for a Flutter application.
+The Real-time detection works on the [MobileNet SSD](https://github.com/tensorflow/models/tree/master/research/object_detection) model while the Classic detection works on both the [MobileNet SSD](https://github.com/tensorflow/models/tree/master/research/object_detection)
+model and the [YoloV2](https://colab.research.google.com/github/sony/nnabla-examples/blob/master/interactive-demos/yolov2.ipynb) model. Either model can be selected as desired.
 
-A few resources to get you started if this is your first Flutter project:
+The model files are downloaded via Gradle scripts when you build and run. You
+don't need to do any steps to download TFLite models into the project
+explicitly.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Application can run either on device or emulator.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Working
+
+This app is divided into two basic parts: 
+1. Real-time Detection
+2. Classic Detection
+
+![home](screenshots/home.jpeg)
+
+## Real-time Detection
+
+In this mode the rear camera of our mobile device is turned on and objects are detected on each frame of the video.
+
+![real-time](screenshots/real-time.jpeg)
+
+## Classic Detection
+
+In this mode you can either choose to click a photo or load an image from the gallery by tapping on either of the floating action buttons on the bottom right of the screen. On the AppBar you can choose which model you want to run.
+
+> Screen look
+![classic](screenshots/classic.jpeg)
+
+> Choose a model
+![models](screenshots/models.jpeg)
+
+> Clicking a photo
+![classic-camera](screenshots/classic-camera.jpeg)
+
+> Loading from gallery
+![classic-load](screenshots/classic-load.jpeg)

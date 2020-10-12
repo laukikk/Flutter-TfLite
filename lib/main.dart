@@ -1,5 +1,4 @@
 import 'package:TfLite/screens/camera_screen.dart';
-import 'package:TfLite/screens/file_upload_screen.dart';
 import 'package:TfLite/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:TfLite/screens/all_models.dart';
@@ -25,7 +24,6 @@ class MyApp extends StatelessWidget {
       routes: {
         HomeScreen.id: (context) => HomeScreen(),
         CameraScreen.id: (context) => CameraScreen(),
-        FileScreen.id: (context) => FileScreen(),
         AllModels.id: (context) => AllModels(),
       },
     );
