@@ -161,7 +161,17 @@ class _CameraScreenState extends State<CameraScreen> {
       left: 0.0,
       width: size.width,
       child: !controller.value.isInitialized
-          ? Text('Error in turning on Camera')
+          ? Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                'Camera \nsays \n404 \n:(',
+                style: TextStyle(
+                  color: Color(0xffaf8d6b),
+                  fontSize: 40,
+                  fontFamily: 'FjallaOne',
+                ),
+              ),
+            )
           : AspectRatio(
               aspectRatio: controller.value.aspectRatio,
               child: CameraPreview(controller)),
@@ -171,7 +181,13 @@ class _CameraScreenState extends State<CameraScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TensorFlow Lite'),
+        title: Text(
+          'TensorFlow Lite',
+          style: TextStyle(
+            fontFamily: 'FjallaOne',
+          ),
+        ),
+        backgroundColor: Color(0xff1B7E81),
       ),
       body: Stack(
         children: stackChildren,
