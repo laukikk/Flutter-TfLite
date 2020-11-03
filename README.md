@@ -20,26 +20,26 @@ This app is divided into two basic parts:
 1. Real-time Detection
 2. Classic Detection
 
-![home](screenshots/home.jpeg | width=50)
+<img src = 'screenshots/home.jpeg' width='250' />
 
 ## Real-time Detection
 
 In this mode the rear camera of our mobile device is turned on and objects are detected on each frame of the video.
 
-![real-time](screenshots/real-time.jpeg)
+<img src = 'screenshots/real-time.jpeg' width='250' />
 
 ## Classic Detection
 
 In this mode you can either choose to click a photo or load an image from the gallery by tapping on either of the floating action buttons on the bottom right of the screen. On the AppBar you can choose which model you want to run.
 
 > Screen look
-![classic](screenshots/classic.jpeg)
+<img src = 'screenshots/classic.jpeg' width='250' />
 
 > Choose a model
-![models](screenshots/models.jpeg)
+<img src = 'screenshots/models.jpeg' width='250' />
 
 > Clicking a photo
-![classic-camera](screenshots/classic-camera.jpeg)
+<img src = 'screenshots/classic-camera.jpeg' width='250' />
 
-> Loading from gallery
-![classic-load](screenshots/classic-load.jpeg)
+> Loading from library
+<img src = 'screenshots/classic-load.jpeg' width='250' />
