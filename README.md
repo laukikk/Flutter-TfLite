@@ -20,7 +20,7 @@ This app is divided into two basic parts:
 1. Real-time Detection
 2. Classic Detection
 
-![home](screenshots/home.jpeg)
+![home](screenshots/home.jpeg | width=100)
 
 ## Real-time Detection
 
