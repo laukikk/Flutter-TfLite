@@ -26,12 +26,13 @@ class _AllModelsState extends State<AllModels> {
 
 // getting the image and passing it to 'predictImage()'
   Future predictImagePicker(ImageSource source) async {
-    var image = await ImagePicker.pickImage(source: source);
-    if (image == null) return;
+    var pickedFile = await ImagePicker().getImage(source: source);
+    if (pickedFile == null) return;
     setState(() {
       _busy = true;
+      _image = File(pickedFile.path);
     });
-    predictImage(image);
+    predictImage(_image);
   }
 
 // runs the desired model on the image recieved from 'predictImagePicker()'
