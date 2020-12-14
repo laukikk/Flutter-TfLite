@@ -1,5 +1,6 @@
-import 'dart:async';
+// This screen comes under Classic Detection for opening the camera and clicking images
 
+import 'dart:async';
 import 'package:tflite/tflite.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';

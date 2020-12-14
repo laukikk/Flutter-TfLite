@@ -1,3 +1,4 @@
+import 'package:TfLite/screens/animation.dart';
 import 'package:TfLite/screens/camera_screen.dart';
 import 'package:TfLite/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +21,12 @@ class MyApp extends StatelessWidget {
           floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: Color(0xffA0766E),
       )),
-      initialRoute: HomeScreen.id,
+      initialRoute: OnboardingExample.id,
       routes: {
         HomeScreen.id: (context) => HomeScreen(),
         CameraScreen.id: (context) => CameraScreen(),
         AllModels.id: (context) => AllModels(),
+        OnboardingExample.id: (context) => OnboardingExample(),
       },
     );
   }

@@ -30,6 +30,7 @@ dependencies:
   tflite: ^1.1.1
   image:
   camera: ^0.5.8+5
+  concentric_transition: ^0.1.1
 
 dev_dependencies:
   flutter_test:
