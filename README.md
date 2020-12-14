@@ -1,4 +1,4 @@
-# TensorFlow Lite Object Detection using Flutter(Android)
+# TensorFlow Lite Object Detection using Flutter (Android)
 
 ### Overview
 

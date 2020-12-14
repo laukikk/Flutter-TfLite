@@ -11,6 +11,7 @@ class PageData {
   final Color bgColor;
   final Color textColor;
   final Color logoColor;
+  final Color cardColor;
   final String screen;
   final String subtitle;
 
@@ -20,10 +21,17 @@ class PageData {
     this.bgColor = Colors.white,
     this.textColor = Colors.black,
     this.logoColor,
+    this.cardColor,
     this.screen,
     this.subtitle,
   });
 }
+
+Color _blue = Color(0xFF457b9d);
+// Color _red = Color(0xFFe76f51);
+Color _yellow = Color(0xFFfca311);
+Color _white = Color(0xFFf1faee);
+// Color _green = Color(0xFF2a9d8f);
 
 class OnboardingExample extends StatelessWidget {
   static const String id = 'onboarding';
@@ -31,26 +39,30 @@ class OnboardingExample extends StatelessWidget {
     PageData(
         icon: Icons.nature_people_rounded,
         title: "Real-time Detection",
-        textColor: Colors.black,
-        bgColor: Color(0xFFFDBFDD),
-        logoColor: Color(0xff4439D9),
+        textColor: Colors.white,
+        bgColor: _yellow,
+        logoColor: _yellow,
+        cardColor: _white,
         screen: CameraScreen.id,
         subtitle:
             'Detect objects real time by pointing your camera towards the subject'),
     PageData(
         icon: Icons.add_a_photo_rounded,
         title: "Click and Detect",
-        bgColor: Color(0xFFFFFFFF),
-        logoColor: Color(0xff8e9aaf),
+        textColor: Colors.grey[700],
+        bgColor: _white,
+        logoColor: _white,
+        cardColor: _yellow,
         screen: AllModels.id,
         subtitle: 'Click a photo from your camera to detect objects.'),
     PageData(
         icon: Icons.image,
         title: "Load and Detect",
-        bgColor: Color(0xFF0043D0),
-        logoColor: Color(0xff01D6C0),
-        screen: AllModels.id,
         textColor: Colors.white,
+        bgColor: _blue,
+        logoColor: _blue,
+        cardColor: _white,
+        screen: AllModels.id,
         subtitle: 'Load images from your gallery to detect objects'),
   ];
 
@@ -61,7 +73,7 @@ class OnboardingExample extends StatelessWidget {
     return Scaffold(
       body: ConcentricPageView(
         colors: colors,
-        radius: 300,
+        radius: 40,
         curve: Curves.ease,
         duration: Duration(seconds: 2),
         itemBuilder: (index, value) {
@@ -75,7 +87,7 @@ class OnboardingExample extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Helvetica',
                     letterSpacing: 0.0,
-                    fontSize: 17,
+                    fontSize: 23,
                   ),
                   subtitle2: TextStyle(
                     color: page.textColor,
@@ -107,10 +119,12 @@ class PageCard extends StatelessWidget {
       child: Column(
 //        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          _buildPicture(context),
-          SizedBox(height: 30),
+          SizedBox(height: 80),
           _buildText(context),
-          Text('data'),
+          SizedBox(height: 50),
+          _buildPicture(context),
+          SizedBox(height: 40),
+          _buildSubtitile(context),
         ],
       ),
     );
@@ -120,6 +134,14 @@ class PageCard extends StatelessWidget {
     return Text(
       page.title,
       style: Theme.of(context).textTheme.headline6,
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildSubtitile(BuildContext context) {
+    return Text(
+      page.subtitle,
+      style: Theme.of(context).textTheme.subtitle2,
       textAlign: TextAlign.center,
     );
   }
@@ -138,14 +160,7 @@ class PageCard extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(60.0)),
-          color: page.bgColor
-              .withBlue(page.bgColor.blue - 40)
-              .withGreen(page.bgColor.green + 20)
-              .withRed(page.bgColor.red - 100)
-              .withAlpha(90),
-        ),
-        margin: EdgeInsets.only(
-          top: 140,
+          color: page.cardColor,
         ),
         child: Stack(
           fit: StackFit.expand,

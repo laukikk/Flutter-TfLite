@@ -1,4 +1,4 @@
-// This is the screen for real-time detection
+// This is the screen for classic detection
 
 import 'dart:async';
 import 'dart:io';

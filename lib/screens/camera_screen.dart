@@ -1,4 +1,4 @@
-// This screen comes under Classic Detection for opening the camera and clicking images
+// This screen is for real-time detection
 
 import 'dart:async';
 import 'package:tflite/tflite.dart';
